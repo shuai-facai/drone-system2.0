@@ -1,0 +1,33 @@
+# 服务器配置
+server:
+  port: 8080  # 服务端口
+
+# Spring 主配置
+spring:
+  profiles:
+    active: sqlite  # 默认激活的配置文件：sqlite 或 mysql
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource  # 使用 Druid 连接池 管理数据库连接
+  sql:
+    init:
+      mode: always  # 每次启动都自动执行数据库初始化脚本（建表）
+
+# MyBatis 配置
+mybatis:
+  mapper-locations: classpath:mapper/*.xml  # 告诉Mapper，SQL映射文件在mapper下
+  type-aliases-package: com.example.drone.entity  # 实体类包路径
+
+---
+# SQLite 数据库配置
+spring:
+  config:
+    activate:
+      on-profile: sqlite  # 当激活 profile 为 sqlite 时使用此配置
+  datasource:
+    url: jdbc:sqlite:./example_db.sqlite  # SQLite 数据库文件路径
+    driver-class-name: org.sqlite.JDBC  
+    # 指定 SQLite 数据库的JDBC驱动类，使 Spring Boot能够通过该驱动加载并连接 SQLite 数据库，实现数据的读写操作。
+  sql:
+    init:
+      schema-locations: classpath:schema-sqlite.sql 
+      # 启动时自动执行 schema-sqlite.sql 建表语句

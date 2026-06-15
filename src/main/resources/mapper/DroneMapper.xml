@@ -1,0 +1,94 @@
+<!-- MyBatis 的XML映射文件，与DroneMapper 接口一一对应，写原生 SQL，实现数据库增删改查-->
+<!DOCTYPE mapper PUBLIC "-//shturl.cc/xAQipO Mapper 3.0//EN" "shturl.cc/OCKFOMzZdCBMzQPtunPyPEiDmNCNoAP0U">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"><!--文档声明-->
+
+<!-- 
+    MyBatis Mapper配置文件
+    对应接口: com.example.drone.mapper.DroneMapper
+    数据表: t_uav(无人机表)
+-->
+<mapper namespace="com.example.drone.mapper.DroneMapper"><!--命名空间必须跟DroneMapper 接口的包名和类名一致-->
+
+    <!-- 结果集映射：数据库字段到实体类属性 -->
+    <resultMap id="DroneResultMap" type="com.example.drone.entity.Drone">
+        <id column="id" property="id" />
+        <result column="uav_code" property="uavCode" />
+        <result column="model" property="model" />
+        <result column="manufacturer" property="manufacturer" />
+        <result column="max_payload" property="maxPayload" />
+        <result column="max_altitude" property="maxAltitude" />
+        <result column="max_flight_time" property="maxFlightTime" />
+        <result column="max_speed" property="maxSpeed" />
+        <result column="wingspan" property="wingspan" />
+        <result column="weight" property="weight" />
+        <result column="status" property="status" />
+        <result column="remark" property="remark" />
+        <result column="ai_generated" property="aiGenerated" />
+    </resultMap>
+
+    <!-- 查询所有无人机 -->
+    <select id="findAll" resultMap="DroneResultMap">
+        SELECT id, uav_code, model, manufacturer, max_payload, max_altitude, 
+               max_flight_time, max_speed, wingspan, weight, status, remark, ai_generated
+        FROM t_uav
+        ORDER BY id DESC
+    </select>
+
+    <!-- 根据ID查询无人机 -->
+    <select id="findById" parameterType="Long" resultMap="DroneResultMap">
+        SELECT id, uav_code, model, manufacturer, max_payload, max_altitude, 
+               max_flight_time, max_speed, wingspan, weight, status, remark, ai_generated
+        FROM t_uav
+        WHERE id = #{id}
+    </select>
+
+    <!-- 根据型号模糊查询 -->
+    <select id="findByModel" parameterType="String" resultMap="DroneResultMap">
+        SELECT id, uav_code, model, manufacturer, max_payload, max_altitude, 
+               max_flight_time, max_speed, wingspan, weight, status, remark, ai_generated
+        FROM t_uav
+        WHERE model LIKE '%' || #{model} || '%'
+        ORDER BY id DESC
+    </select>
+
+    <!-- 根据注册编号模糊查询 -->
+    <select id="findByUavCode" parameterType="String" resultMap="DroneResultMap">
+        SELECT id, uav_code, model, manufacturer, max_payload, max_altitude, 
+               max_flight_time, max_speed, wingspan, weight, status, remark, ai_generated
+        FROM t_uav
+        WHERE uav_code LIKE '%' || #{uavCode} || '%'
+        ORDER BY id DESC
+    </select>
+
+    <!-- 插入新无人机 -->
+    <insert id="insert" parameterType="com.example.drone.entity.Drone">
+        INSERT INTO t_uav (uav_code, model, manufacturer, max_payload, max_altitude, 
+                          max_flight_time, max_speed, wingspan, weight, status, remark, ai_generated)
+        VALUES (#{uavCode}, #{model}, #{manufacturer}, #{maxPayload}, #{maxAltitude},
+                #{maxFlightTime}, #{maxSpeed}, #{wingspan}, #{weight}, #{status}, #{remark}, #{aiGenerated})
+    </insert>
+
+    <!-- 更新无人机信息 -->
+    <update id="update" parameterType="com.example.drone.entity.Drone">
+        UPDATE t_uav
+        SET uav_code = #{uavCode},
+            model = #{model},
+            manufacturer = #{manufacturer},
+            max_payload = #{maxPayload},
+            max_altitude = #{maxAltitude},
+            max_flight_time = #{maxFlightTime},
+            max_speed = #{maxSpeed},
+            wingspan = #{wingspan},
+            weight = #{weight},
+            status = #{status},
+            remark = #{remark},
+            ai_generated = #{aiGenerated}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 根据ID删除无人机 -->
+    <delete id="deleteById" parameterType="Long">
+        DELETE FROM t_uav WHERE id = #{id}
+    </delete>
+</mapper>
